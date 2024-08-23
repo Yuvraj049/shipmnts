@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Review Data</title>
+</head>
+<body>
+  <h1>Review Data</h1>
+  <form id="confirmForm" action="/confirm-upload" method="post">
+    <table border="1">
+      <tr>
+        <th>Company Name</th>
+        <th>Contact Number</th>
+      </tr>
+      <% data.forEach(function(row) { %>
+      <tr>
+        <td><%= row['Company Name'] %></td>
+        <td><%= row['Contact Number'] %></td>
+      </tr>
+      <% }) %>
+    </table>
+    <button type="submit">Confirm and Upload</button>
+  </form>
+  <script src="review.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Company Data</title>
+</head>
+<body>
+  <h1>Upload Excel File</h1>
+  <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+    <label for="file">Upload Excel File:</label>
+    <input type="file" id="file" name="file" accept=".xls,.xlsx">
+    <button type="submit">Upload</button>
+  </form>
+</body>
+</html>
