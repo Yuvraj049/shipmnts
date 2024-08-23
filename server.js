@@ -9,24 +9,14 @@ const { error } = require('console');
 const app = express();
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('views'));
 app.use(body.json());
+app.use(express.static('views'));
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 
-// const upload = multer({ dest : 'uploads/' });
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './uploads');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
-
 
 app.get('/', (req, res) => {
   res.render('index');
@@ -38,7 +28,8 @@ app.post('/upload', upload.single('file'), (req, res) => {
     return res.status(400).send('No file uploaded.');
   }
 
-  const workbook = XLSX.readFile(req.file.path);
+  const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
+
   const sheetName = workbook.SheetNames[0];
   const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
   console.log("Sheet data:", sheet);
@@ -46,7 +37,6 @@ app.post('/upload', upload.single('file'), (req, res) => {
   if (validatedData.errors.length > 0) {
     return res.status(400).json({ errors: validatedData.errors });
   }
-  console.log(validatedData.validData);
   res.render('review', { data: validatedData.validData });
 });
 
@@ -63,7 +53,6 @@ function validateData(sheet) {
     // Update these keys to match the actual column names in your file
     const companyName = row['Company Name'];
     const contactNumber = row['Contact Number'];
-    console.log(companyName, contactNumber);
     if (!companyName || !contactNumber) {
       errors.push(`Row ${index + 1} has missing fields.`);
     } else {
@@ -85,9 +74,8 @@ app.post('/confirm-upload', async (req, res) => {
     for (const row of data) {
       const company = new Company({
         name: row['Company Name'],
-        contactNumber: row['Contact Number'],
+        contact: row['Contact Number'],
       });
-
       await company.save();
     }
 
