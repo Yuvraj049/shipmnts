@@ -9,10 +9,10 @@ const { error } = require('console');
 const app = express();
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static('views'));
+app.use(body.json());
 app.set('view engine', 'ejs');
 
-connectDb();
 
 // const upload = multer({ dest : 'uploads/' });
 
@@ -80,8 +80,8 @@ function validateData(sheet) {
 
 app.post('/confirm-upload', async (req, res) => {
   const { data } = req.body;
-  console.log(data);
-  try {
+  console.log(req.body);
+  try { 
     for (const row of data) {
       const company = new Company({
         name: row['Company Name'],
